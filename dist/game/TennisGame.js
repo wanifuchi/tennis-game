@@ -1,27 +1,19 @@
-export class TennisGame {
-    private player1Score: number;
-    private player2Score: number;
-    private gameStatus: string;
-    private scoreElement: HTMLElement | null;
-    private statusElement: HTMLElement | null;
-    private player1Button: HTMLButtonElement | null;
-    private player2Button: HTMLButtonElement | null;
-    private startButton: HTMLButtonElement | null;
-    private endButton: HTMLButtonElement | null;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TennisGame = void 0;
+class TennisGame {
     constructor() {
         this.player1Score = 0;
         this.player2Score = 0;
         this.gameStatus = 'Not Started';
         this.scoreElement = document.getElementById('score');
         this.statusElement = document.getElementById('status');
-        this.player1Button = document.getElementById('p1') as HTMLButtonElement | null;
-        this.player2Button = document.getElementById('p2') as HTMLButtonElement | null;
-        this.startButton = document.getElementById('start') as HTMLButtonElement | null;
-        this.endButton = document.getElementById('end') as HTMLButtonElement | null;
+        this.player1Button = document.getElementById('p1');
+        this.player2Button = document.getElementById('p2');
+        this.startButton = document.getElementById('start');
+        this.endButton = document.getElementById('end');
     }
-
-    startGame(): void {
+    startGame() {
         this.player1Score = 0;
         this.player2Score = 0;
         this.gameStatus = 'In Progress'; // Set status first
@@ -44,33 +36,31 @@ export class TennisGame {
             this.endButton.disabled = false;
         }
     }
-
-    playPoint(winner: number): void {
+    playPoint(winner) {
         if (this.gameStatus !== 'In Progress' && !this.gameStatus.startsWith('Advantage') && this.gameStatus !== 'Deuce') {
             console.log('Game is not currently in progress or has already ended.');
             return;
         }
-
         let playerWon = false;
-
         if (winner === 1) {
             this.player1Score++;
-        } else if (winner === 2) {
+        }
+        else if (winner === 2) {
             this.player2Score++;
-        } else {
+        }
+        else {
             // console.log('Invalid player number. Use 1 or 2.'); // Removed
             return;
         }
-
         // Check for win
         if ((this.player1Score >= 4 && this.player1Score >= this.player2Score + 2)) {
             this.gameStatus = 'Game Player 1';
             playerWon = true;
-        } else if ((this.player2Score >= 4 && this.player2Score >= this.player1Score + 2)) {
+        }
+        else if ((this.player2Score >= 4 && this.player2Score >= this.player1Score + 2)) {
             this.gameStatus = 'Game Player 2';
             playerWon = true;
         }
-
         if (playerWon) {
             if (this.statusElement) {
                 this.statusElement.textContent = this.gameStatus;
@@ -81,31 +71,34 @@ export class TennisGame {
             if (this.player2Button) {
                 this.player2Button.disabled = true;
             }
-        } else { // Game not won, check for Deuce/Advantage
+        }
+        else { // Game not won, check for Deuce/Advantage
             if (this.player1Score >= 3 && this.player2Score >= 3) {
                 if (this.player1Score === this.player2Score) {
                     this.gameStatus = 'Deuce';
-                } else if (this.player1Score === this.player2Score + 1) {
-                    this.gameStatus = 'Advantage Player 1';
-                } else if (this.player2Score === this.player1Score + 1) {
-                    this.gameStatus = 'Advantage Player 2';
-                } else {
-                     this.gameStatus = 'In Progress'; // Should not happen if already advantage, but as a fallback
                 }
-            } else {
+                else if (this.player1Score === this.player2Score + 1) {
+                    this.gameStatus = 'Advantage Player 1';
+                }
+                else if (this.player2Score === this.player1Score + 1) {
+                    this.gameStatus = 'Advantage Player 2';
+                }
+                else {
+                    this.gameStatus = 'In Progress'; // Should not happen if already advantage, but as a fallback
+                }
+            }
+            else {
                 this.gameStatus = 'In Progress'; // Default if not Deuce/Advantage/Win
             }
             if (this.statusElement) {
-                 this.statusElement.textContent = this.gameStatus; // Display Deuce or Advantage or In Progress
+                this.statusElement.textContent = this.gameStatus; // Display Deuce or Advantage or In Progress
             }
         }
-
         if (this.scoreElement) {
             this.scoreElement.textContent = this.getCurrentScoreDisplay();
         }
     }
-
-    endGame(): void {
+    endGame() {
         this.gameStatus = 'Ended';
         if (this.statusElement) {
             this.statusElement.textContent = 'Ended';
@@ -126,8 +119,7 @@ export class TennisGame {
             this.endButton.disabled = true;
         }
     }
-
-    private getScoreTerm(score: number): string {
+    getScoreTerm(score) {
         switch (score) {
             case 0:
                 return 'Love';
@@ -141,22 +133,22 @@ export class TennisGame {
                 return ''; // Should not happen in standard tennis
         }
     }
-
-    private getCurrentScoreDisplay(): string {
+    getCurrentScoreDisplay() {
         if (this.gameStatus.startsWith('Game Player')) {
             return `Player 1: ${this.player1Score} - Player 2: ${this.player2Score}`; // Shows final numeric score
         }
         // If game ended prematurely by user
         if (this.gameStatus === 'Ended') {
-             return `Player 1: ${this.player1Score} - Player 2: ${this.player2Score}`;
+            return `Player 1: ${this.player1Score} - Player 2: ${this.player2Score}`;
         }
-
         if (this.player1Score >= 3 && this.player2Score >= 3) {
             if (this.player1Score === this.player2Score) {
                 return 'Deuce';
-            } else if (this.player1Score === this.player2Score + 1) {
+            }
+            else if (this.player1Score === this.player2Score + 1) {
                 return 'Advantage Player 1';
-            } else if (this.player2Score === this.player1Score + 1) {
+            }
+            else if (this.player2Score === this.player1Score + 1) {
                 return 'Advantage Player 2';
             }
             // Fallback for scores like 4-6 if Advantage logic was bypassed, though game should end.
@@ -166,3 +158,4 @@ export class TennisGame {
         return `${this.getScoreTerm(this.player1Score)}-${this.getScoreTerm(this.player2Score)}`;
     }
 }
+exports.TennisGame = TennisGame;
